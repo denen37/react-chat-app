@@ -29,7 +29,9 @@ const Login = () => {
     const sendLoginDetails = async (email, password) => {
         try {
             setState(State.PENDING)
+
             setError('')
+
             const result = await axios.post(`${import.meta.env.VITE_AUTH_URL}/api/auth/login`, { email, password })
 
             setState(State.SUCCESS)
@@ -43,11 +45,11 @@ const Login = () => {
             setState(State.ERROR)
 
             if (error.code === 'ERR_NETWORK') {
-
+                console.log('ERR_NETWORK')
                 setError(error.message)
             } else if (error.code === 'ERR_BAD_REQUEST') {
-
-                setError(error.response.data.message)
+                console.log('ERR_BAD_REQUEST')
+                setError(error.response?.data.message)
             }
         }
     }

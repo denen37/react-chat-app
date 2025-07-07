@@ -112,9 +112,15 @@
 }
 
 @layer base {
+  :root {
+    --background: #ffffff;
+    --foreground: #111827;
+  }
+
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }

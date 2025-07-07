@@ -12,6 +12,7 @@ import ChatInput from '@/components/chatinput';
 import { Sent, Received } from '@/components/message';
 import { Dialog, DialogTrigger } from "@/components/ui/dialog"
 import InvoiceDialog from '@/components/invoice-dialog';
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -23,9 +24,15 @@ const Chat = ({ socket }) => {
     const partner = useSelector((state) => state.chat.partner);
     const room = useSelector((state) => state.chat.room);
 
+    const navigate = useNavigate();
+
 
     const dispatch = useDispatch();
     const messagesEndRef = useRef(null);
+
+    const handleInitiateCall = () => {
+        navigate('/phone-call')
+    }
 
 
     useEffect(() => {
@@ -78,7 +85,7 @@ const Chat = ({ socket }) => {
                             </Dialog>
 
 
-                            <Button variant="outline" size="icon">
+                            <Button variant="outline" size="icon" onClick={handleInitiateCall}>
                                 <Phone />
                             </Button>
 
@@ -107,8 +114,14 @@ const Chat = ({ socket }) => {
                     room={room}
                 />
             </div> :
-            <div className='flex justify-center items-center h-full'>
-                <h1 className='text-2xl font-bold text-gray-300'>No Chat selected</h1>
+            <div className='flex flex-col  h-full'>
+                <div>
+                    <SidebarTrigger className="" />
+                </div>
+
+                <div className='flex flex-1 justify-center items-center'>
+                    <h1 className='text-2xl font-bold text-gray-300'>No Chat selected</h1>
+                </div>
             </div>
     )
 }
