@@ -5,7 +5,7 @@ const config = {
     iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
 };
 
-function MediaChat({ socket }) {
+function MediaChatDialog({ socket }) {
     const localVideo = useRef(null);
     const remoteVideo = useRef(null);
 
@@ -113,4 +113,4 @@ function MediaChat({ socket }) {
     );
 }
 
-export default MediaChat;
+export default MediaChatDialog;

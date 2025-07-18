@@ -7,7 +7,6 @@ import ChatLayout from "./components/chat-layout";
 //import VideoChat from "./pages/videochat";
 import MediaChat from "./pages/MediaChat"
 import VideoChat from "./pages/videochat";
-import CallChat from "./pages/callchat";
 
 
 export default function App() {
@@ -16,7 +15,6 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/chat" element={<ChatLayout />} />
-        <Route path="/phone-call" element={<CallChat />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>

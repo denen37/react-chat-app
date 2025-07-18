@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from 'react';
+/* eslint-disable no-unused-vars */
+import React, { useEffect, useRef, useState } from 'react';
 import { Phone, Video, NotepadText } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { SidebarTrigger, SidebarRail } from "@/components/ui/sidebar";
@@ -12,6 +13,7 @@ import ChatInput from '@/components/chatinput';
 import { Sent, Received } from '@/components/message';
 import { Dialog, DialogTrigger } from "@/components/ui/dialog"
 import InvoiceDialog from '@/components/invoice-dialog';
+import CallChatDialog from '@/components/call-chat-dialog';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -19,20 +21,19 @@ import { useNavigate } from 'react-router-dom';
 
 const Chat = ({ socket }) => {
     const user = useSelector((state) => state.auth.user);
-    console.log(user);
     const messages = useSelector((state) => state.chat.messages);
     const partner = useSelector((state) => state.chat.partner);
     const room = useSelector((state) => state.chat.room);
+    const [open, setOpen] = React.useState(false);
 
     const navigate = useNavigate();
 
 
     const dispatch = useDispatch();
     const messagesEndRef = useRef(null);
+    const ringtone = useRef(null);
+    const calltone = useRef(null);
 
-    const handleInitiateCall = () => {
-        navigate('/phone-call')
-    }
 
 
     useEffect(() => {
@@ -42,6 +43,19 @@ const Chat = ({ socket }) => {
 
         socket.on("receive_file", (data) => {
             dispatch(addMessage(data));
+        })
+
+        socket.on("call-made", (data) => {
+            setOpen(true);
+        });
+
+        socket.on("call-ended", () => {
+            setOpen(false);
+        })
+
+
+        socket.on("call-rejected", () => {
+            setOpen(false);
         })
 
         return () => {
@@ -69,6 +83,8 @@ const Chat = ({ socket }) => {
                                 <AvatarFallback className={"bg-blue-500 text-white font-bold"}>{getInitials(partner?.profile.firstName + ' ' + partner?.profile.lastName)}</AvatarFallback>
                             </Avatar>
 
+
+
                             <div>
                                 <h2 className='font-semibold'>{partner.user?.profile?.fullName}</h2>
                                 <p className='text-sm'>{partner.profession?.title}</p>
@@ -84,10 +100,20 @@ const Chat = ({ socket }) => {
                                 <InvoiceDialog socket={socket} />
                             </Dialog>
 
+                            <Dialog open={open} onOpenChange={setOpen}>
+                                <DialogTrigger>
+                                    <audio ref={ringtone} src="/quest-605.mp3" preload="auto" />
+                                    <audio ref={calltone} src="/cheerful-2-528.mp3" preload="auto" />
+                                    <Button variant="outline"
+                                        size="icon"
+                                        onClick={() => console.log('You clicked me')}
+                                    >
+                                        <Phone />
+                                    </Button>
+                                </DialogTrigger>
+                                <CallChatDialog socket={socket} toneref={ringtone} calltoneref={calltone} />
+                            </Dialog>
 
-                            <Button variant="outline" size="icon" onClick={handleInitiateCall}>
-                                <Phone />
-                            </Button>
 
                             <Button variant="outline" size="icon">
                                 <Video />

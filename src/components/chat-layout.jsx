@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 const socket = io(import.meta.env.VITE_CHAT_URL, {
     path: '/chat',
     autoConnect: false,
+    transports: ["websocket"]
 });
 
 export default function ChatLayout() {

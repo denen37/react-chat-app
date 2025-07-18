@@ -1,7 +1,8 @@
 import React, { useRef, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from "@/components/ui/button";
-import { SendHorizontal } from 'lucide-react';
+import { SendHorizontal , Paperclip} from 'lucide-react';
+import { Label } from "@/components/ui/label"
 
 const ChatInput = ({ socket, userId, partnerId, room }) => {
     const [files, setFiles] = useState([]);
@@ -57,9 +58,18 @@ const ChatInput = ({ socket, userId, partnerId, room }) => {
     return (
         <footer className='px-4 py-4 flex gap-1 absolute bottom-0 left-0 right-0 bg-white z-10 shadow-md'>
             <form className='' ref={formRef} >
+               
+                <Label
+                className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 size-9 shadow-none cursor-pointer"
+                htmlFor="upload"
+            >
+                <Paperclip />
+            </Label>
+                
                 <Input
                     type="file"
-                    className="w-fit"
+                    className="w-fit hidden"
+                    id="upload"
                     onChange={(e) => handleFile(e)}
                 />
             </form>
