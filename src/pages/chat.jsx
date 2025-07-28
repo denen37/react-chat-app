@@ -15,6 +15,7 @@ import { Dialog, DialogTrigger } from "@/components/ui/dialog"
 import InvoiceDialog from '@/components/invoice-dialog';
 import CallChatDialog from '@/components/call-chat-dialog';
 import { useNavigate } from 'react-router-dom';
+import VideoChatDialog from '@/components/video-chat-dialog';
 
 
 
@@ -25,6 +26,7 @@ const Chat = ({ socket }) => {
     const partner = useSelector((state) => state.chat.partner);
     const room = useSelector((state) => state.chat.room);
     const [open, setOpen] = React.useState(false);
+    const [openVideoCall, setOpenVideoCall] = React.useState(false);
 
     const navigate = useNavigate();
 
@@ -33,6 +35,8 @@ const Chat = ({ socket }) => {
     const messagesEndRef = useRef(null);
     const ringtone = useRef(null);
     const calltone = useRef(null);
+    const vringtone = useRef(null);
+    const vcalltone = useRef(null);
 
 
 
@@ -56,6 +60,21 @@ const Chat = ({ socket }) => {
 
         socket.on("call-rejected", () => {
             setOpen(false);
+        })
+
+
+
+        socket.on("video-call-made", (data) => {
+            setOpenVideoCall(true);
+        });
+
+        socket.on("video-call-ended", () => {
+            setOpenVideoCall(false);
+        })
+
+
+        socket.on("video-call-rejected", () => {
+            setOpenVideoCall(false);
         })
 
         return () => {
@@ -115,9 +134,16 @@ const Chat = ({ socket }) => {
                             </Dialog>
 
 
-                            <Button variant="outline" size="icon">
-                                <Video />
-                            </Button>
+                            <Dialog open={openVideoCall} onOpenChange={setOpenVideoCall}>
+                                <DialogTrigger>
+                                    <audio ref={vringtone} src="/quest-605.mp3" preload="auto" />
+                                    <audio ref={vcalltone} src="/cheerful-2-528.mp3" preload="auto" />
+                                    <Button variant="outline" size="icon">
+                                        <Video />
+                                    </Button>
+                                </DialogTrigger>
+                                <VideoChatDialog socket={socket} toneref={vringtone} calltoneref={vcalltone} />
+                            </Dialog>
                         </div>
                     </div>
                 </header>

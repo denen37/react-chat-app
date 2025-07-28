@@ -33,6 +33,17 @@ function CallChatDialog({ socket, toneref, calltoneref }) {
     const peerConnection = useRef(null);
     const iceCandidatesQueue = useRef([]);
 
+    const getLocalStream = async () => {
+        if (localStream.current) {
+            console.log("Local stream already initialized");
+            return;
+        }
+
+
+        navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+            localStream.current = stream;
+        });
+    }
 
     const initPeerConnection = () => {
         peerConnection.current = new RTCPeerConnection(config);
@@ -57,6 +68,7 @@ function CallChatDialog({ socket, toneref, calltoneref }) {
 
 
     const callUser = async () => {
+        getLocalStream();
         setIsCalling(true);
         initPeerConnection();
 
@@ -141,18 +153,12 @@ function CallChatDialog({ socket, toneref, calltoneref }) {
         }
     };
 
-    // useEffect(() => {
-    //     console.log("Ringtone ref value:", ringtone.current);
-    // }, [ringtone]);
-
 
 
     useEffect(() => {
-        navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-            localStream.current = stream;
-        });
-
         socket.on("call-made", (data) => {
+            getLocalStream();
+
             setIncomingCall({ from: data.from, offer: data.offer });
 
             if (ringtone.current) {
